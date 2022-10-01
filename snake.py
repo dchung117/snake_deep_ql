@@ -94,7 +94,7 @@ class SnakeGameEnvironment:
 
         # 3. check if game over
         game_over = False
-        if self._is_collision() or self.frame > 100*len(self.snake): # end game if collision or snake doesn't eat food in time
+        if self.is_collision() or self.frame > 100*len(self.snake): # end game if collision or snake doesn't eat food in time
             game_over = True
             reward = -10
             return reward, game_over, self.score
@@ -114,7 +114,7 @@ class SnakeGameEnvironment:
         # 6. return game over and score
         return reward, game_over, self.score
 
-    def _is_collision(self, point=None):
+    def is_collision(self, point=None):
         # Default point is None
         if point is None:
             point = self.head
