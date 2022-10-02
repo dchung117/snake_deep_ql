@@ -1,6 +1,7 @@
 import random
 from enum import Enum
 from collections import namedtuple
+from typing import Optional
 
 import numpy as np
 import pygame
@@ -114,7 +115,7 @@ class SnakeGameEnvironment:
         # 6. return game over and score
         return reward, game_over, self.score
 
-    def is_collision(self, point=None):
+    def is_collision(self, point: Optional[Point] =None):
         # Default point is None
         if point is None:
             point = self.head
