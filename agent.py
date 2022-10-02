@@ -7,7 +7,6 @@ import torch
 
 from snake import SnakeGameEnvironment, Direction, Point, BLOCK_SIZE
 
-
 MAX_MEMORY = 100_000 # max buffer size
 BATCH_SIZE = 100 # batch size for training deep q-net
 lr = 0.001 # learning rate
