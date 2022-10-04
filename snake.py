@@ -28,7 +28,7 @@ BLACK = (0,0,0)
 
 # size of one block (20 x 20)
 BLOCK_SIZE = 20
-SPEED = 20
+SPEED = 40
 
 class SnakeGameEnvironment:
     def __init__(self, w=640, h=480):
@@ -154,7 +154,7 @@ class SnakeGameEnvironment:
         idx = directions.index(self.direction)
 
         # Get action idx [straight, right, left]
-        action_idx = np.argwhere(action == 1).flatten()[0]
+        action_idx = action.index(1)
 
         # Get new direction
         if action_idx == 0: # straight

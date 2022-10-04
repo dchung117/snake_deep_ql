@@ -6,21 +6,23 @@ import numpy as np
 import torch
 
 from snake import SnakeGameEnvironment, Direction, Point, BLOCK_SIZE
+from model import LinearQNet, QNetTrainer
+from helper import plot
 
 MAX_MEMORY = 100_000 # max buffer size
-BATCH_SIZE = 100 # batch size for training deep q-net
-lr = 0.001 # learning rate
+BATCH_SIZE = 1000 # batch size for training deep q-net
+LR = 0.001 # learning rate
 
 class Agent(object):
     def __init__(self):
         self.n_games = 0 # number of games
         self.epsilon = 0 # exploration vs. exploitation (epsilon-greedy exploration policy)
-        self.gamma = 0 # discount rate
+        self.gamma = 0.9 # discount rate
         self.memory = deque(maxlen=MAX_MEMORY) # memory buffer -> queue w/ max length ( removes old data )
 
-        # TODO: deep q-net
-        self.model = None
-        self.trainer = None
+        # initialize model, trainer
+        self.model = LinearQNet(input_size=11, hidden_size=256, output_size=3)
+        self.trainer = QNetTrainer(model=self.model, lr=LR, gamma=self.gamma)
 
     def get_state(self, game: SnakeGameEnvironment) -> np.ndarray:
         # Get snake head position, bounds, and directions
@@ -94,10 +96,10 @@ class Agent(object):
 
         # Sample a random move
         if random.randint(0, 200) < self.epsilon:
-            a_idx = random.randint()
+            a_idx = random.randint(0, 2)
         else: # Take best action from q-net
-            state = torch.Tensor(state, dtype=torch.int64)
-            q = self.model.predict(state)
+            state = torch.tensor(state, dtype=torch.float)
+            q = self.model(state)
             a_idx = torch.argmax(q).item()
         action[a_idx] = 1
 
@@ -149,10 +151,20 @@ def train():
                 best_score = best_score
 
                 # TODO: Save model for best score
+                agent.model.save()
 
             print("Game: ", agent.n_games, "Score: ", score, "Best Score: ", best_score)
 
-            # TODO: plot agent learning
+            # Append game score
+            plot_scores.append(score)
+
+            # Get new mean score
+            total_score += score
+            mean_score = total_score / agent.n_games
+            plot_mean_scores.append(mean_score)
+
+            # plot agent learning
+            plot(plot_scores, plot_mean_scores)
 
 if __name__ == "__main__":
     train()
